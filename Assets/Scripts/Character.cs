@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Character : MonoBehaviour {
-
-
+public class Character : MonoBehaviour
+{
+    // desde este punto se verifica el contacto con el suelo para saltar correctamente
+    public GameObject feet;
+    // layer en el cual se realiza el raycast2d para ver si el character esta tocando el suelo
+    public LayerMask layerMask;
+    
     Rigidbody2D rb2d;
     SpriteRenderer sr;
     Animator anim;
@@ -33,8 +37,12 @@ public class Character : MonoBehaviour {
 
         sr.flipX = !facingRight;
 
-        if (Input.GetButtonDown("Jump")) {
-            rb2d.AddForce(Vector2.up*jumpForce);
+        if (Input.GetButtonDown("Jump"))
+        {
+            // verificar que el character este tocando el suelo antes de saltar
+            RaycastHit2D hitInfo = Physics2D.Raycast(feet.transform.position, Vector2.down, 0.1f, layerMask);
+            if(hitInfo.collider != null)
+                rb2d.AddForce(Vector2.up*jumpForce);
         }
 	}
 }
